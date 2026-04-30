@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>УТМ клуба &quot;Сайфа&quot; и Первенство г.о. Чехов</title>
+  <style>
+    :root { --bg:#f6f7fb; --card:#fff; --text:#1f2937; --muted:#6b7280; --line:#e5e7eb; --accent:#2563eb; --accent-light:#dbeafe; --danger:#dc2626; --danger-light:#fee2e2; --success:#16a34a; --success-light:#dcfce7; --warning-light:#fef3c7; --shadow:0 10px 25px rgba(15,23,42,.08); --radius:16px; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Arial, sans-serif; background:var(--bg); color:var(--text); }
+    header { padding:24px; background:#111827; color:#fff; }
+    header h1 { margin:0 0 8px; font-size:28px; }
+    header p { margin:0; color:#d1d5db; }
+    main { max-width:1500px; margin:0 auto; padding:24px; display:grid; grid-template-columns:360px 1fr; gap:20px; }
+    .panel,.content { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px; }
+    .panel { height:fit-content; position:sticky; top:16px; }
+    h2,h3 { margin-top:0; }
+    label { display:block; font-size:13px; color:var(--muted); margin-bottom:6px; }
+    input,select,textarea,button { font:inherit; }
+    input,select,textarea { width:100%; border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:#fff; color:var(--text); }
+    input.invalid { border-color:var(--danger); background:var(--danger-light); }
+    textarea { min-height:70px; resize:vertical; }
+    .field { margin-bottom:12px; }
+    button { border:0; border-radius:10px; padding:10px 14px; cursor:pointer; background:var(--accent); color:#fff; font-weight:600; }
+    button.secondary { background:#eef2ff; color:#3730a3; }
+    button.ghost { background:transparent; color:var(--accent); border:1px solid var(--accent-light); }
+    button.danger { background:var(--danger-light); color:var(--danger); }
+    button.success { background:var(--success-light); color:var(--success); }
+    button.warning { background:var(--warning-light); color:#92400e; }
+    button:disabled { opacity:.45; cursor:not-allowed; }
+    .row { display:flex; gap:8px; align-items:center; }
+    .row > * { flex:1; }
+    .toolbar { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:16px; }
+    .small { font-size:12px; color:var(--muted); }
+    .hint { padding:12px 14px; border-radius:12px; background:#f9fafb; color:var(--muted); border:1px dashed var(--line); line-height:1.45; }
+    .top-warning { margin-bottom:16px; padding:12px 14px; border-radius:12px; background:var(--danger-light); color:var(--danger); font-weight:700; border:1px solid var(--danger); }
+    .category-list { display:flex; flex-direction:column; gap:8px; margin:14px 0; }
+    .category-item { border:1px solid var(--line); border-radius:12px; padding:10px; cursor:pointer; background:#fff; }
+    .category-item.active { border-color:var(--accent); background:var(--accent-light); }
+    .category-item strong { display:block; margin-bottom:4px; }
+    .category-item span { color:var(--muted); font-size:13px; }
+    .tabs { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
+    .tab { background:#f3f4f6; color:var(--text); }
+    .tab.active { background:var(--accent); color:#fff; }
+    .bracket-visual { display:flex; gap:18px; overflow-x:auto; padding-bottom:12px; align-items:flex-start; }
+    .round-column { min-width:290px; }
+    .round-title { font-weight:800; margin-bottom:12px; padding:10px 12px; border-radius:12px; background:#f3f4f6; }
+    .fight-card { border:1px solid var(--line); border-radius:14px; padding:12px; margin-bottom:14px; background:#fff; }
+    .fight-card.missing-number { border-color:var(--danger); background:#fff7f7; }
+    .fight-card.done { border-color:var(--success); }
+    .fight-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; gap:8px; }
+    .fight-number { font-weight:800; }
+    .fight-number-input { width:88px; display:inline-block; padding:5px 7px; }
+    .status { font-size:12px; border-radius:999px; padding:4px 8px; background:#f3f4f6; color:var(--muted); white-space:nowrap; }
+    .status.done { background:var(--success-light); color:var(--success); }
+    .status.missing { background:var(--danger-light); color:var(--danger); }
+    .source-label { color:var(--muted); font-size:12px; margin:3px 0 0; }
+    .athlete { display:grid; grid-template-columns:1fr auto; gap:8px; align-items:center; border:1px solid var(--line); border-radius:12px; padding:10px; margin-bottom:8px; }
+    .athlete.winner { border-color:var(--success); background:#f0fdf4; }
+    .athlete-name { font-weight:700; min-height:20px; }
+    .athlete-name.empty { color:var(--muted); font-weight:500; }
+    .note { grid-column:1/-1; }
+    .note textarea { min-height:52px; font-size:13px; margin-top:6px; }
+    .fight-edit { border-top:1px solid var(--line); margin-top:10px; padding-top:10px; }
+    details summary { cursor:pointer; color:var(--accent); font-weight:700; margin:8px 0; }
+    .results-table { width:100%; border-collapse:collapse; margin-top:12px; }
+    .results-table th,.results-table td { border-bottom:1px solid var(--line); padding:10px; text-align:left; vertical-align:top; }
+    .results-table th { color:var(--muted); font-size:13px; }
+    .fight-board { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+    .board-card { border:1px solid var(--line); border-radius:18px; padding:18px; background:#fff; }
+    .board-card.current { border-color:#f59e0b; background:#fffbeb; }
+    .board-title { font-size:15px; color:var(--muted); margin-bottom:8px; }
+    .board-number { font-size:34px; font-weight:900; margin-bottom:8px; }
+    .board-athlete { font-size:24px; font-weight:800; padding:12px; border-radius:12px; background:#f3f4f6; margin-top:8px; }
+    .bout-screen { max-width:900px; margin:0 auto; }
+    .bout-header { text-align:center; margin-bottom:24px; }
+    .bout-number { font-size:56px; line-height:1; font-weight:900; margin-bottom:10px; }
+    .bout-meta { color:var(--muted); font-size:18px; }
+    .bout-athletes { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:20px; }
+    .bout-athlete-card { border:2px solid var(--line); border-radius:22px; padding:22px; background:#fff; text-align:center; }
+    .bout-athlete-card.winner { border-color:var(--success); background:#f0fdf4; }
+    .bout-side { color:var(--muted); font-size:16px; margin-bottom:10px; text-transform:uppercase; letter-spacing:.08em; }
+    .bout-name { font-size:30px; font-weight:900; min-height:72px; display:flex; align-items:center; justify-content:center; }
+    .bout-actions { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:18px; }
+    .bout-finish { width:100%; font-size:22px; padding:18px; margin-top:12px; }
+    .empty-state { text-align:center; padding:60px 20px; color:var(--muted); }
+    .modal-backdrop { position:fixed; inset:0; background:rgba(17,24,39,.55); display:none; align-items:center; justify-content:center; padding:20px; z-index:10; }
+    .modal-backdrop.open { display:flex; }
+    .modal { background:#fff; border-radius:18px; box-shadow:var(--shadow); padding:20px; width:min(860px,100%); max-height:90vh; overflow:auto; }
+    .kbd { display:inline-block; padding:2px 6px; border-radius:6px; background:#f3f4f6; border:1px solid var(--line); font-size:12px; }
+    @media(max-width:1000px){ main{grid-template-columns:1fr;} .panel{position:static;} .fight-board{grid-template-columns:1fr;} .row{display:block;} }
+  .brand-header{display:flex;align-items:center;gap:18px}.brand-logo{width:92px;height:92px;object-fit:contain;background:#fff;border-radius:18px;padding:8px}.brand-text{min-width:0}
+</style>
+</head>
+<body>
+<header><div class="brand-header"><div class="brand-text"><h1>УТМ клуба &quot;Сайфа&quot; и Первенство г.о. Чехов</h1><p>Категории, бои, победители, заметки, текущий бой, Excel и наглядная сетка переходов.</p></div></div></header>
+<main>
+  <aside class="panel">
+    <h2>Категории</h2>
+    <div class="field"><label for="categoryName">Название категории</label><input id="categoryName" placeholder="Например: девочки 10–11 лет, до 35 кг"></div>
+    <div class="field"><label for="categoryFormat">Формат категории</label><select id="categoryFormat"><option value="eighth">Олимпийская сетка с 1/8 финала</option><option value="quarter">Олимпийская сетка с 1/4 финала</option><option value="semi">Олимпийская сетка с 1/2 финала</option><option value="finalOnly">2 человека — сразу финал</option><option value="roundRobin3">3 человека — каждый с каждым</option></select></div>
+    <div class="field" id="thirdPlaceCreateBlock"><label style="display:flex;gap:8px;align-items:center;color:var(--text)"><input type="checkbox" id="thirdPlaceEnabled" style="width:auto"> Бой за 3 место</label></div>
+    <div class="hint" style="margin-bottom:12px">Введите участников первого круга. Номера боёв можно оставить пустыми — программа подставит свободные номера.</div>
+    <div id="olympicCreateBlock"></div>
+    <div id="roundRobinCreateBlock" style="display:none"><div class="field"><label>Ака</label><input id="rrAthlete1" placeholder="Фамилия Имя"></div><div class="field"><label>Широ</label><input id="rrAthlete2" placeholder="Фамилия Имя"></div><div class="field"><label>Спортсмен 3</label><input id="rrAthlete3" placeholder="Фамилия Имя"></div></div>
+    <button id="addCategoryBtn">Добавить категорию</button>
+    <div class="category-list" id="categoryList"></div>
+    <div class="toolbar"><button class="secondary" id="saveJsonBtn">Сохранить JSON</button><button class="ghost" id="loadJsonBtn">Загрузить JSON</button><button class="success" id="exportExcelBtn">Экспорт в Excel</button><input type="file" id="loadFile" accept="application/json" style="display:none"></div>
+    <p class="small">Номер боя должен быть уникальным во всех категориях.</p>
+  </aside>
+  <section class="content"><div id="fightNumberWarning"></div><div class="tabs"><button class="tab active" data-tab="category">Категория</button><button class="tab" data-tab="board">Текущий и следующий бой</button><button class="tab" data-tab="bout">Текущий бой</button><button class="tab" data-tab="list">Полный список боёв</button></div><div id="mainView" class="empty-state">Добавьте или выберите категорию слева.</div></section>
+</main>
+<div class="modal-backdrop" id="importModal"><div class="modal"><h2>Массовый ввод боёв</h2><p class="hint">Формат строки: <span class="kbd">номер боя; круг; ака; широ</span><br>Круги: <b>eighth</b>, <b>quarter</b>, <b>semi</b>, <b>final</b>, <b>third</b>, <b>roundRobin</b>.</p><textarea id="bulkText" style="min-height:220px" placeholder="1; eighth; Иванов Иван; Петров Петр"></textarea><div class="toolbar" style="margin-top:14px"><button id="applyBulkImportBtn">Загрузить бои</button><button class="ghost" id="closeImportModalBtn">Отмена</button></div></div></div>
+<script>
+'use strict';
+var STORAGE_KEY='karateTournamentApp.v7';
+var ROUND_LABELS={eighth:'1/8 финала',quarter:'1/4 финала',semi:'1/2 финала',final:'Финал',third:'Бой за 3 место',roundRobin:'Каждый с каждым'};
+var ALLOWED_BULK_ROUNDS=['eighth','quarter','semi','final','third','roundRobin'];
+var state={categories:[],selectedCategoryId:null,activeTab:'category',activeBoutFightId:null};
+var NL=String.fromCharCode(10);
+var CR=String.fromCharCode(13);
+function uid(){if(window.crypto&&typeof window.crypto.randomUUID==='function')return window.crypto.randomUUID();return 'id-'+Date.now()+'-'+Math.random().toString(16).slice(2);}
+function escapeHtml(v){return String(v==null?'':v).split('&').join('&amp;').split('<').join('&lt;').split('>').join('&gt;').split('"').join('&quot;').split("'").join('&#039;');}
+function emptyFight(round,n){return{id:uid(),fightNumber:String(n==null?'':n),round:round,athlete1:'',athlete2:'',winner:'',loser:'',source1:'',source2:'',notes:{athlete1:'',athlete2:''}};}
+function getInitialRound(f){if(f==='eighth')return'eighth';if(f==='quarter')return'quarter';if(f==='semi')return'semi';if(f==='finalOnly')return'final';return'roundRobin';}
+function getInitialFightCount(f){if(f==='eighth')return 8;if(f==='quarter')return 4;if(f==='semi')return 2;if(f==='finalOnly')return 1;return 3;}
+function normalizeFightNumber(v){return String(v==null?'':v).trim();}
+function arrayIncludes(arr,value){for(var i=0;i<arr.length;i++){if(arr[i]===value)return true;}return false;}
+function getSelectedCategory(){for(var i=0;i<state.categories.length;i++){if(state.categories[i].id===state.selectedCategoryId)return state.categories[i];}return null;}
+function getRoundFights(c,r){var out=[];for(var i=0;i<c.fights.length;i++){if(c.fights[i].round===r)out.push(c.fights[i]);}out.sort(function(a,b){return Number(a.fightNumber||999999)-Number(b.fightNumber||999999);});return out;}
+function getAllUsedFightNumbers(excludeCategoryId,excludeFightId){var used={};for(var i=0;i<state.categories.length;i++){var c=state.categories[i];for(var j=0;j<c.fights.length;j++){var f=c.fights[j];if(c.id===excludeCategoryId&&f.id===excludeFightId)continue;var n=normalizeFightNumber(f.fightNumber);if(n)used[n]=true;}}return used;}
+function isFightNumberTaken(n,cid,fid){n=normalizeFightNumber(n);if(!n)return false;var used=getAllUsedFightNumbers(cid,fid);return !!used[n];}
+function isFightNumberTakenOutsideCategory(n,cid){n=normalizeFightNumber(n);if(!n)return false;for(var i=0;i<state.categories.length;i++){var c=state.categories[i];if(c.id===cid)continue;for(var j=0;j<c.fights.length;j++){if(normalizeFightNumber(c.fights[j].fightNumber)===n)return true;}}return false;}
+function getNextAvailableFightNumber(extra){var used=getAllUsedFightNumbers();if(extra){for(var key in extra){if(Object.prototype.hasOwnProperty.call(extra,key))used[key]=true;}}var i=1;while(used[String(i)])i++;return String(i);}
+function createCategory(name,format,thirdPlaceEnabled,athletes){athletes=athletes||[];var c={id:uid(),name:name,format:format,startRound:format==='roundRobin3'?null:getInitialRound(format),thirdPlaceEnabled:(format==='roundRobin3'||format==='finalOnly')?false:!!thirdPlaceEnabled,athletes:athletes.slice(0,3),fights:[]};var i;if(format==='eighth'){for(i=0;i<8;i++)c.fights.push(emptyFight('eighth'));for(i=0;i<4;i++)c.fights.push(emptyFight('quarter'));for(i=0;i<2;i++)c.fights.push(emptyFight('semi'));c.fights.push(emptyFight('final'));if(thirdPlaceEnabled)c.fights.push(emptyFight('third'));}if(format==='quarter'){for(i=0;i<4;i++)c.fights.push(emptyFight('quarter'));for(i=0;i<2;i++)c.fights.push(emptyFight('semi'));c.fights.push(emptyFight('final'));if(thirdPlaceEnabled)c.fights.push(emptyFight('third'));}if(format==='semi'){for(i=0;i<2;i++)c.fights.push(emptyFight('semi'));c.fights.push(emptyFight('final'));if(thirdPlaceEnabled)c.fights.push(emptyFight('third'));}if(format==='finalOnly'){c.fights.push(emptyFight('final'));}if(format==='roundRobin3'){var a=athletes[0]||'',b=athletes[1]||'',d=athletes[2]||'';c.fights.push(Object.assign(emptyFight('roundRobin'),{athlete1:a,athlete2:b}),Object.assign(emptyFight('roundRobin'),{athlete1:a,athlete2:d}),Object.assign(emptyFight('roundRobin'),{athlete1:b,athlete2:d}));}return c;}
+function normalizeCategory(c){c.fights=Array.isArray(c.fights)?c.fights:[];for(var i=0;i<c.fights.length;i++){var f=c.fights[i];f.notes=f.notes||{athlete1:'',athlete2:''};f.notes.athlete1=f.notes.athlete1||'';f.notes.athlete2=f.notes.athlete2||'';f.source1=f.source1||'';f.source2=f.source2||'';}c.athletes=Array.isArray(c.athletes)?c.athletes:[];if(!c.format&&c.startRound)c.format=c.startRound;if(!state.activeTab)state.activeTab='category';if(state.activeBoutFightId===undefined)state.activeBoutFightId=null;}
+function loadState(){var raw=localStorage.getItem(STORAGE_KEY);if(!raw)return;try{var p=JSON.parse(raw);if(p&&Array.isArray(p.categories)){state=p;for(var i=0;i<state.categories.length;i++)normalizeCategory(state.categories[i]);}}catch(e){console.error(e);}}
+function saveState(r){if(r===undefined)r=true;localStorage.setItem(STORAGE_KEY,JSON.stringify(state));if(r)render();}
+function renderOlympicCreateInputs(format){var root=document.getElementById('olympicCreateBlock');if(!root)return;format=format||document.getElementById('categoryFormat').value||'eighth';if(format==='roundRobin3'){root.innerHTML='';return;}var round=getInitialRound(format),count=getInitialFightCount(format),used={};var html='<div class="small" style="margin-bottom:8px">Первый круг: '+escapeHtml(ROUND_LABELS[round])+'</div>';for(var i=1;i<=count;i++){var hint=getNextAvailableFightNumber(used);used[hint]=true;html+='<div class="field"><label>Бой '+i+' — номер боя</label><input id="firstFight'+i+'Number" placeholder="например, '+hint+'"></div><div class="row"><div class="field"><label>Бой '+i+' — ака</label><input id="firstFight'+i+'A" placeholder="Фамилия Имя"></div><div class="field"><label>Бой '+i+' — широ</label><input id="firstFight'+i+'B" placeholder="Фамилия Имя"></div></div>';}root.innerHTML=html;}
+function toggleCreateOptions(){var f=document.getElementById('categoryFormat').value;document.getElementById('thirdPlaceCreateBlock').style.display=(f==='roundRobin3'||f==='finalOnly')?'none':'block';document.getElementById('roundRobinCreateBlock').style.display=f==='roundRobin3'?'block':'none';renderOlympicCreateInputs(f);}
+function assignMissingOrDuplicateFightNumbers(c){var local={};for(var i=0;i<c.fights.length;i++){var f=c.fights[i];var n=normalizeFightNumber(f.fightNumber);if(!n||isFightNumberTaken(n,c.id,f.id)||local[n])n=getNextAvailableFightNumber(local);f.fightNumber=n;local[n]=true;}}
+function addCategory(){var name=document.getElementById('categoryName').value.trim();var format=document.getElementById('categoryFormat').value;var third=document.getElementById('thirdPlaceEnabled').checked;if(!name){alert('Введите название категории');return;}var athletes=[];if(format==='roundRobin3'){var ids=['rrAthlete1','rrAthlete2','rrAthlete3'];for(var a=0;a<ids.length;a++)athletes.push(document.getElementById(ids[a]).value.trim());for(var b=0;b<athletes.length;b++){if(!athletes[b]){alert('Для формата «каждый с каждым» заполните всех 3 спортсменов');return;}}}var c=createCategory(name,format,third,athletes),local={};if(format!=='roundRobin3'){var first=getRoundFights(c,getInitialRound(format));for(var i=0;i<first.length;i++){var num=i+1;var nEl=document.getElementById('firstFight'+num+'Number');var aEl=document.getElementById('firstFight'+num+'A');var bEl=document.getElementById('firstFight'+num+'B');var n=normalizeFightNumber(nEl?nEl.value:'');if(n&&(isFightNumberTaken(n,c.id,first[i].id)||local[n])){alert('Бой № '+n+' уже используется. Программа назначит свободный номер.');n='';}if(!n)n=getNextAvailableFightNumber(local);local[n]=true;first[i].fightNumber=n;first[i].athlete1=aEl?aEl.value.trim():'';first[i].athlete2=bEl?bEl.value.trim():'';}}assignMissingOrDuplicateFightNumbers(c);state.categories.push(c);state.selectedCategoryId=c.id;state.activeTab='category';document.getElementById('categoryName').value='';document.getElementById('thirdPlaceEnabled').checked=false;var rr=['rrAthlete1','rrAthlete2','rrAthlete3'];for(var r=0;r<rr.length;r++){var el=document.getElementById(rr[r]);if(el)el.value='';}toggleCreateOptions();recalculateCategory(c);saveState();}
+function selectCategory(id){state.selectedCategoryId=id;state.activeTab='category';saveState();}
+function deleteCategory(id){if(!confirm('Удалить категорию и все бои в ней?'))return;var next=[];for(var i=0;i<state.categories.length;i++){if(state.categories[i].id!==id)next.push(state.categories[i]);}state.categories=next;if(state.selectedCategoryId===id)state.selectedCategoryId=state.categories[0]?state.categories[0].id:null;saveState();}
+function updateCategoryField(field,value){var c=getSelectedCategory();if(!c)return;c[field]=value;saveState();}
+function toggleThirdPlace(enabled){var c=getSelectedCategory();if(!c||c.format==='roundRobin3')return;c.thirdPlaceEnabled=enabled;var has=false;for(var i=0;i<c.fights.length;i++){if(c.fights[i].round==='third')has=true;}if(enabled&&!has)c.fights.push(emptyFight('third',getNextAvailableFightNumber()));if(!enabled){var out=[];for(var j=0;j<c.fights.length;j++){if(c.fights[j].round!=='third')out.push(c.fights[j]);}c.fights=out;}recalculateCategory(c);saveState();}
+function addFight(round){var c=getSelectedCategory();if(!c)return;c.fights.push(emptyFight(round,getNextAvailableFightNumber()));recalculateCategory(c);saveState();}
+function deleteFight(id){var c=getSelectedCategory();if(!c)return;var out=[];for(var i=0;i<c.fights.length;i++){if(c.fights[i].id!==id)out.push(c.fights[i]);}c.fights=out;recalculateCategory(c);saveState();}
+function updateFight(id,field,value){var c=getSelectedCategory();if(!c)return;var f=null;for(var i=0;i<c.fights.length;i++){if(c.fights[i].id===id)f=c.fights[i];}if(!f)return;if(field==='fightNumber'){var n=normalizeFightNumber(value);if(!n){f.fightNumber='';saveState();return;}if(isFightNumberTaken(n,c.id,f.id)){alert('Бой № '+n+' уже есть в другой категории. Введите уникальный номер.');saveState();return;}f.fightNumber=n;saveState();return;}f[field]=value;if(field==='athlete1'||field==='athlete2'){f.winner='';f.loser='';if(c.format==='roundRobin3')syncRoundRobinAthletesFromFights(c);}recalculateCategory(c);saveState();}
+function updateNote(id,key,value){var c=getSelectedCategory();if(!c)return;var f=null;for(var i=0;i<c.fights.length;i++){if(c.fights[i].id===id)f=c.fights[i];}if(!f)return;f.notes=f.notes||{athlete1:'',athlete2:''};f.notes[key]=value;saveState(false);}
+function chooseWinner(id,side){var c=getSelectedCategory();if(!c)return;var f=null;for(var i=0;i<c.fights.length;i++){if(c.fights[i].id===id)f=c.fights[i];}if(!f)return;var winner=side==='athlete1'?f.athlete1:f.athlete2;var loser=side==='athlete1'?f.athlete2:f.athlete1;if(!winner)return;f.winner=winner;f.loser=loser||'';if(state.activeTab==='bout')state.activeBoutFightId=id;recalculateCategory(c);saveState();}
+function clearWinner(id){var c=getSelectedCategory();if(!c)return;var f=null;for(var i=0;i<c.fights.length;i++){if(c.fights[i].id===id)f=c.fights[i];}if(!f)return;f.winner='';f.loser='';if(state.activeTab==='bout')state.activeBoutFightId=id;recalculateCategory(c);saveState();}
+function setGeneratedParticipant(f,side,name,src){if(!f)return;f[side]=name||'';f[side==='athlete1'?'source1':'source2']=src||'';if(f.winner&&f.winner!==f.athlete1&&f.winner!==f.athlete2){f.winner='';f.loser='';}}
+function connectWinnersToNextRound(prev,next){for(var i=0;i<next.length;i++){var a=prev[i*2],b=prev[i*2+1];setGeneratedParticipant(next[i],'athlete1',a?a.winner:'',a?'победитель боя №'+(a.fightNumber||'—'):'');setGeneratedParticipant(next[i],'athlete2',b?b.winner:'',b?'победитель боя №'+(b.fightNumber||'—'):'');}}
+function recalculateCategory(c){if(c.format==='roundRobin3'){syncRoundRobinAthletesFromFights(c);return;}var e=getRoundFights(c,'eighth'),q=getRoundFights(c,'quarter'),s=getRoundFights(c,'semi'),fin=getRoundFights(c,'final'),t=getRoundFights(c,'third');if(e.length&&q.length)connectWinnersToNextRound(e,q);if(q.length&&s.length)connectWinnersToNextRound(q,s);if(s.length&&fin.length)connectWinnersToNextRound(s,fin);if(c.thirdPlaceEnabled&&s.length&&t.length){setGeneratedParticipant(t[0],'athlete1',s[0]?s[0].loser:'',s[0]?'проигравший боя №'+(s[0].fightNumber||'—'):'');setGeneratedParticipant(t[0],'athlete2',s[1]?s[1].loser:'',s[1]?'проигравший боя №'+(s[1].fightNumber||'—'):'');}}
+function syncRoundRobinAthletesFromFights(c){var names=[];for(var i=0;i<c.fights.length;i++){var vals=[c.fights[i].athlete1,c.fights[i].athlete2];for(var j=0;j<vals.length;j++){var n=String(vals[j]||'').trim();if(n&&names.indexOf(n)===-1)names.push(n);}}c.athletes=names.slice(0,3);}
+function getRoundRobinStats(c){var st={};for(var i=0;i<c.athletes.length;i++){st[c.athletes[i]]={athlete:c.athletes[i],wins:0,losses:0,fightsDone:0};}for(var j=0;j<c.fights.length;j++){var f=c.fights[j];var vals=[f.athlete1,f.athlete2];for(var k=0;k<vals.length;k++){if(vals[k]&&!st[vals[k]])st[vals[k]]={athlete:vals[k],wins:0,losses:0,fightsDone:0};}if(f.winner){if(!st[f.winner])st[f.winner]={athlete:f.winner,wins:0,losses:0,fightsDone:0};st[f.winner].wins++;st[f.winner].fightsDone++;if(f.loser){if(!st[f.loser])st[f.loser]={athlete:f.loser,wins:0,losses:0,fightsDone:0};st[f.loser].losses++;st[f.loser].fightsDone++;}}}var out=[];for(var key in st){if(Object.prototype.hasOwnProperty.call(st,key))out.push(st[key]);}out.sort(function(a,b){return b.wins-a.wins||a.losses-b.losses||a.athlete.localeCompare(b.athlete);});return out;}
+function getAllFightsOrdered(){var all=[];for(var i=0;i<state.categories.length;i++){for(var j=0;j<state.categories[i].fights.length;j++){all.push({category:state.categories[i],fight:state.categories[i].fights[j]});}}var filtered=[];for(var k=0;k<all.length;k++){if(normalizeFightNumber(all[k].fight.fightNumber))filtered.push(all[k]);}filtered.sort(function(a,b){return Number(a.fight.fightNumber)-Number(b.fight.fightNumber);});return filtered;}
+function getCurrentAndNextFight(){var ordered=getAllFightsOrdered();var idx=-1;for(var i=0;i<ordered.length;i++){var f=ordered[i].fight;if(!f.winner&&f.athlete1&&f.athlete2){idx=i;break;}}if(idx<0)return{current:null,next:null};return{current:ordered[idx],next:ordered[idx+1]||null};}
+function render(){var tabs=document.querySelectorAll('.tab');for(var i=0;i<tabs.length;i++){tabs[i].classList.toggle('active',tabs[i].getAttribute('data-tab')===state.activeTab);}renderFightNumberWarning();renderCategoryList();if(state.activeTab==='board')renderFightBoard();else if(state.activeTab==='bout')renderBoutPage();else if(state.activeTab==='list')renderFightList();else renderCategoryView();}
+function getMissingFightNumbers(){var nums=[];for(var i=0;i<state.categories.length;i++){for(var j=0;j<state.categories[i].fights.length;j++){var n=normalizeFightNumber(state.categories[i].fights[j].fightNumber);var num=Number(n);if(n&&String(num)===n&&num>0&&Math.floor(num)===num)nums.push(num);}}if(!nums.length)return[];nums.sort(function(a,b){return a-b;});var min=nums[0],max=nums[nums.length-1],seen={};for(var s=0;s<nums.length;s++)seen[String(nums[s])]=true;var missing=[];for(var x=min;x<=max;x++){if(!seen[String(x)])missing.push(x);}return missing;}
+function renderFightNumberWarning(){var root=document.getElementById('fightNumberWarning');if(!root)return;var missing=getMissingFightNumbers();if(!missing.length){root.innerHTML='';return;}root.innerHTML='<div class="top-warning">Внимание: пропущены номера боёв: '+missing.join(', ')+'</div>';}
+function renderCategoryList(){var list=document.getElementById('categoryList');list.innerHTML='';for(var i=0;i<state.categories.length;i++){var c=state.categories[i],done=0,missing=0;for(var j=0;j<c.fights.length;j++){if(c.fights[j].winner)done++;if(!normalizeFightNumber(c.fights[j].fightNumber))missing++;}var item=document.createElement('div');item.className='category-item'+(c.id===state.selectedCategoryId?' active':'');item.setAttribute('data-category-id',c.id);var label=c.format==='roundRobin3'?'3 человека · каждый с каждым':ROUND_LABELS[c.startRound];item.innerHTML='<strong>'+escapeHtml(c.name)+'</strong><span>'+escapeHtml(label)+' · '+done+'/'+c.fights.length+' боёв завершено'+(missing?' · нет номеров: '+missing:'')+'</span>';list.appendChild(item);}}
+function renderCategoryView(){var root=document.getElementById('mainView'),c=getSelectedCategory();if(!c){root.className='empty-state';root.innerHTML='Добавьте или выберите категорию слева.';return;}root.className='';recalculateCategory(c);if(c.format==='roundRobin3')renderRoundRobinCategory(root,c);else renderOlympicCategory(root,c);}
+function renderOlympicCategory(root,c){root.innerHTML='<div class="toolbar" style="justify-content:space-between"><div><h2 style="margin-bottom:6px">'+escapeHtml(c.name)+'</h2><div class="small">'+escapeHtml(ROUND_LABELS[c.startRound])+(c.thirdPlaceEnabled?' · есть бой за 3 место':' · два третьих места без боя за 3 место')+'</div></div><div class="toolbar"><button class="secondary" data-action="open-import">Массовый ввод</button><button class="ghost" data-action="print">Печать</button><button class="danger" data-action="delete-category" data-category-id="'+escapeHtml(c.id)+'">Удалить категорию</button></div></div><div class="row" style="margin-bottom:16px"><div class="field"><label>Название</label><input data-action="update-category-name" value="'+escapeHtml(c.name)+'"></div><div class="field"><label>Бой за 3 место</label><select data-action="toggle-third-place"><option value="no" '+(!c.thirdPlaceEnabled?'selected':'')+'>Нет</option><option value="yes" '+(c.thirdPlaceEnabled?'selected':'')+'>Да</option></select></div></div><div class="toolbar"><button class="ghost" data-action="add-fight" data-round="eighth">+ бой 1/8</button><button class="ghost" data-action="add-fight" data-round="quarter">+ бой 1/4</button><button class="ghost" data-action="add-fight" data-round="semi">+ бой 1/2</button><button class="ghost" data-action="add-fight" data-round="final">+ финал</button><button class="ghost" data-action="add-fight" data-round="third">+ за 3 место</button></div><div class="bracket-visual">'+renderRound(c,'eighth')+renderRound(c,'quarter')+renderRound(c,'semi')+renderRound(c,'final')+renderRound(c,'third')+'</div>'+renderResults(c);}
+function renderRoundRobinCategory(root,c){root.innerHTML='<div class="toolbar" style="justify-content:space-between"><div><h2 style="margin-bottom:6px">'+escapeHtml(c.name)+'</h2><div class="small">Формат: 3 человека — каждый с каждым.</div></div><div class="toolbar"><button class="secondary" data-action="open-import">Массовый ввод</button><button class="ghost" data-action="print">Печать</button><button class="danger" data-action="delete-category" data-category-id="'+escapeHtml(c.id)+'">Удалить категорию</button></div></div><div class="field"><label>Название</label><input data-action="update-category-name" value="'+escapeHtml(c.name)+'"></div><div class="bracket-visual"><div class="round-column"><div class="round-title">Каждый с каждым</div>'+getRoundFights(c,'roundRobin').map(renderFight).join('')+'</div></div>'+renderRoundRobinResults(c);}
+function renderRound(c,r){var fights=getRoundFights(c,r);return'<div class="round-column"><div class="round-title">'+escapeHtml(ROUND_LABELS[r])+'</div>'+(fights.length?fights.map(renderFight).join(''):'<div class="hint">Боёв нет</div>')+'</div>';}
+function isGeneratedRound(r){return r==='quarter'||r==='semi'||r==='final'||r==='third';}
+function renderFight(f){var miss=!normalizeFightNumber(f.fightNumber),done=!!f.winner,ro=isGeneratedRound(f.round)&&(f.source1||f.source2)?'readonly':'';return'<div class="fight-card '+(miss?'missing-number ':'')+(done?'done':'')+'" data-fight-id="'+escapeHtml(f.id)+'"><div class="fight-header"><div class="fight-number">Бой № <input class="fight-number-input '+(miss?'invalid':'')+'" data-action="update-fight-number" data-fight-id="'+escapeHtml(f.id)+'" value="'+escapeHtml(f.fightNumber)+'" placeholder="нет"></div><span class="status '+(miss?'missing':done?'done':'')+'">'+(miss?'нет номера':done?'завершён':'ожидает')+'</span></div>'+renderAthlete(f,'athlete1')+renderAthlete(f,'athlete2')+'<div class="toolbar" style="margin:8px 0 0"><button class="success" data-action="choose-winner" data-fight-id="'+escapeHtml(f.id)+'" data-side="athlete1" '+(f.athlete1?'':'disabled')+'>Победил 1</button><button class="success" data-action="choose-winner" data-fight-id="'+escapeHtml(f.id)+'" data-side="athlete2" '+(f.athlete2?'':'disabled')+'>Победил 2</button><button class="warning" data-action="clear-winner" data-fight-id="'+escapeHtml(f.id)+'" '+(f.winner?'':'disabled')+'>Сброс</button></div><details class="fight-edit"><summary>Редактировать бой</summary><div class="field"><label>Ака</label><input data-action="update-fight-athlete" data-fight-id="'+escapeHtml(f.id)+'" data-field="athlete1" value="'+escapeHtml(f.athlete1)+'" '+ro+'></div><div class="field"><label>Широ</label><input data-action="update-fight-athlete" data-fight-id="'+escapeHtml(f.id)+'" data-field="athlete2" value="'+escapeHtml(f.athlete2)+'" '+ro+'></div><button class="danger" data-action="delete-fight" data-fight-id="'+escapeHtml(f.id)+'">Удалить бой</button></details></div>';}
+function renderAthlete(f,key){var name=f[key]||'',src=key==='athlete1'?f.source1:f.source2,win=f.winner&&f.winner===name,note=f.notes&&f.notes[key]?f.notes[key]:'';return'<div class="athlete '+(win?'winner':'')+'"><div><div class="athlete-name '+(name?'':'empty')+'">'+escapeHtml(name||src||'ожидает участника')+'</div>'+(src?'<div class="source-label">'+escapeHtml(src)+'</div>':'')+'</div><div>'+(win?'🏆':'')+'</div><div class="note"><label>Заметка по спортсмену '+(key==='athlete1'?'1':'2')+'</label><textarea data-action="update-note" data-fight-id="'+escapeHtml(f.id)+'" data-key="'+key+'">'+escapeHtml(note)+'</textarea></div></div>';}
+function renderResults(c){var fin=getRoundFights(c,'final')[0],semis=getRoundFights(c,'semi'),third=getRoundFights(c,'third')[0];var thirdRows='';if(c.thirdPlaceEnabled)thirdRows='<tr><td>3 место</td><td>'+escapeHtml(third?third.winner||'—':'—')+'</td></tr>';else{var bronze=[];for(var i=0;i<semis.length;i++){if(semis[i].loser)bronze.push(semis[i].loser);}if(bronze.length){for(var b=0;b<bronze.length;b++)thirdRows+='<tr><td>3 место</td><td>'+escapeHtml(bronze[b])+'</td></tr>';}else thirdRows='<tr><td>3 место</td><td>оба проигравших в 1/2 финала</td></tr>';}return'<h3 style="margin-top:22px">Итоги категории</h3><table class="results-table"><thead><tr><th>Место</th><th>Спортсмен</th></tr></thead><tbody><tr><td>1 место</td><td>'+escapeHtml(fin?fin.winner||'—':'—')+'</td></tr><tr><td>2 место</td><td>'+escapeHtml(fin?fin.loser||'—':'—')+'</td></tr>'+thirdRows+'</tbody></table>';}
+function renderRoundRobinResults(c){var stats=getRoundRobinStats(c),rows='';for(var i=0;i<stats.length;i++){rows+='<tr><td>'+(i+1)+'</td><td>'+escapeHtml(stats[i].athlete)+'</td><td>'+stats[i].wins+'</td><td>'+stats[i].losses+'</td><td>'+stats[i].fightsDone+'</td></tr>';}return'<h3 style="margin-top:22px">Таблица результатов</h3><table class="results-table"><thead><tr><th>Место</th><th>Спортсмен</th><th>Победы</th><th>Поражения</th><th>Проведено</th></tr></thead><tbody>'+rows+'</tbody></table>';}
+function renderFightList(){var root=document.getElementById('mainView');root.className='';var items=[];for(var i=0;i<state.categories.length;i++){var c=state.categories[i];for(var j=0;j<c.fights.length;j++)items.push({category:c,fight:c.fights[j]});}items.sort(function(a,b){var an=Number(a.fight.fightNumber||999999),bn=Number(b.fight.fightNumber||999999);return an-bn;});if(!items.length){root.innerHTML='<div class="empty-state">Список боёв пока пуст.</div>';return;}var html='<h2>Полный список боёв по порядку</h2><table class="results-table"><thead><tr><th>№ боя</th><th>Категория</th><th>Круг</th><th>Ака</th><th>Широ</th><th>Статус</th><th>Победитель</th></tr></thead><tbody>';for(var k=0;k<items.length;k++){var f=items[k].fight;html+='<tr><td>'+escapeHtml(f.fightNumber||'нет номера')+'</td><td>'+escapeHtml(items[k].category.name)+'</td><td>'+escapeHtml(ROUND_LABELS[f.round]||f.round)+'</td><td>'+escapeHtml(f.athlete1||f.source1||'—')+'</td><td>'+escapeHtml(f.athlete2||f.source2||'—')+'</td><td>'+escapeHtml(f.winner?'завершён':'ожидает')+'</td><td>'+escapeHtml(f.winner||'—')+'</td></tr>';}html+='</tbody></table>';root.innerHTML=html;}
+function getFightById(id){if(!id)return null;for(var i=0;i<state.categories.length;i++){var c=state.categories[i];for(var j=0;j<c.fights.length;j++){if(c.fights[j].id===id)return{category:c,fight:c.fights[j]};}}return null;}
+function renderBoutPage(){var root=document.getElementById('mainView'),p=getCurrentAndNextFight();root.className='';var current=getFightById(state.activeBoutFightId);if(!current){current=p.current;if(current)state.activeBoutFightId=current.fight.id;}if(!current){root.innerHTML='<div class="empty-state">Нет текущего боя: все бои с заполненными участниками завершены или ещё не сформированы.</div>';return;}var f=current.fight,c=current.category;var formatLabel=c.format==='roundRobin3'?'3 человека — каждый с каждым':ROUND_LABELS[c.startRound];root.innerHTML='<div class="bout-screen"><div class="bout-header"><div class="bout-number">Бой № '+escapeHtml(f.fightNumber||'—')+'</div><div class="bout-meta">'+escapeHtml(c.name)+' · '+escapeHtml(formatLabel||'')+' · '+escapeHtml(ROUND_LABELS[f.round]||f.round)+'</div></div><div class="bout-athletes"><div class="bout-athlete-card '+(f.winner&&f.winner===f.athlete1?'winner':'')+'"><div class="bout-side">Ака</div><div class="bout-name">'+escapeHtml(f.athlete1||'—')+'</div><button class="success" data-action="choose-winner" data-fight-id="'+escapeHtml(f.id)+'" data-side="athlete1" '+(f.athlete1?'':'disabled')+'>Победил ака</button></div><div class="bout-athlete-card '+(f.winner&&f.winner===f.athlete2?'winner':'')+'"><div class="bout-side">Широ</div><div class="bout-name">'+escapeHtml(f.athlete2||'—')+'</div><button class="success" data-action="choose-winner" data-fight-id="'+escapeHtml(f.id)+'" data-side="athlete2" '+(f.athlete2?'':'disabled')+'>Победил широ</button></div></div><div class="bout-actions"><button class="warning" data-action="clear-winner" data-fight-id="'+escapeHtml(f.id)+'" '+(f.winner?'':'disabled')+'>Сбросить победителя</button></div><button class="bout-finish" data-action="finish-current-bout" data-fight-id="'+escapeHtml(f.id)+'">Бой завершен</button></div>';}
+function finishCurrentBout(id){var current=getFightById(id);if(!current){state.activeBoutFightId=null;renderBoutPage();return;}if(!current.fight.winner){alert('Сначала выберите победителя боя.');return;}state.activeBoutFightId=null;state.activeTab='bout';saveState();}
+function renderFightBoard(){var root=document.getElementById('mainView'),p=getCurrentAndNextFight();root.className='';if(!p.current){root.innerHTML='<div class="empty-state">Нет текущего боя: все бои с заполненными спортсменами завершены или ещё не сформированы.</div>';return;}root.innerHTML='<h2>Текущий и следующий бой</h2><div class="fight-board">'+renderBoardCard(p.current,'Текущий бой',true)+renderBoardCard(p.next,'Следующий бой',false)+'</div><p class="small" style="margin-top:14px">Очередность считается по номерам боёв во всех категориях.</p>';}
+function renderBoardCard(item,title,current){if(!item)return'<div class="board-card"><div class="board-title">'+escapeHtml(title)+'</div><div class="small">Следующего боя пока нет</div></div>';var f=item.fight;return'<div class="board-card '+(current?'current':'')+'"><div class="board-title">'+escapeHtml(title)+'</div><div class="board-number">Бой № '+escapeHtml(f.fightNumber||'—')+'</div><div class="small">'+escapeHtml(item.category.name)+' · '+escapeHtml(ROUND_LABELS[f.round]||f.round)+'</div><div class="board-athlete">'+escapeHtml(f.athlete1||'—')+'</div><div class="board-athlete">'+escapeHtml(f.athlete2||'—')+'</div></div>';}
+function openImportModal(){document.getElementById('importModal').classList.add('open');}
+function closeImportModal(){document.getElementById('importModal').classList.remove('open');}
+function parseBulkText(text){var clean=String(text||'').split(CR).join('');var lines=clean.split(NL);var out=[];for(var i=0;i<lines.length;i++){var line=lines[i].trim();if(!line)continue;var p=line.split(';');for(var j=0;j<p.length;j++)p[j]=p[j].trim();var item={fightNumber:p[0]||'',round:p[1]||'',athlete1:p[2]||'',athlete2:p[3]||''};if(item.fightNumber&&arrayIncludes(ALLOWED_BULK_ROUNDS,item.round)&&item.athlete1&&item.athlete2)out.push(item);}return out;}
+function applyBulkImport(){var c=getSelectedCategory(),text=document.getElementById('bulkText').value.trim();if(!c||!text)return;var parsed=parseBulkText(text);if(!parsed.length){alert('Не удалось распознать строки.');return;}var dup=[],seen={};for(var i=0;i<parsed.length;i++){var n=normalizeFightNumber(parsed[i].fightNumber);if(seen[n]||isFightNumberTakenOutsideCategory(n,c.id))dup.push(n);seen[n]=true;}if(dup.length){alert('Номера уже используются: '+dup.join(', '));return;}c.fights=[];for(var j=0;j<parsed.length;j++){var f=emptyFight(parsed[j].round,parsed[j].fightNumber);f.athlete1=parsed[j].athlete1;f.athlete2=parsed[j].athlete2;c.fights.push(f);}if(c.format==='roundRobin3')syncRoundRobinAthletesFromFights(c);recalculateCategory(c);document.getElementById('bulkText').value='';closeImportModal();saveState();}
+function saveToFile(){var blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='karate-tournament-data.json';a.click();URL.revokeObjectURL(url);}
+function tableToHtml(title,rows){var html='<h2>'+escapeHtml(title)+'</h2><table border="1">';for(var i=0;i<rows.length;i++){html+='<tr>';for(var j=0;j<rows[i].length;j++)html+='<td>'+escapeHtml(rows[i][j])+'</td>';html+='</tr>';}return html+'</table>';}
+function csvEscape(value){var text=String(value==null?'':value);text=text.split('"').join('""');return '"'+text+'"';}
+function downloadTextFile(filename,content,mimeType){var blob=new Blob([content],{type:mimeType});var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();document.body.removeChild(a);window.setTimeout(function(){URL.revokeObjectURL(url);},1000);}
+function exportToExcel(){var rows=[];rows.push(['Раздел','Категория','Формат','Круг','№ боя','Ака','Источник 1','Широ','Источник 2','Победитель','Проигравший','Заметка 1','Заметка 2']);for(var i=0;i<state.categories.length;i++){var c=state.categories[i];var label=c.format==='roundRobin3'?'3 человека — каждый с каждым':ROUND_LABELS[c.startRound];for(var j=0;j<c.fights.length;j++){var f=c.fights[j];rows.push(['Бои',c.name,label,ROUND_LABELS[f.round]||f.round,f.fightNumber,f.athlete1,f.source1||'',f.athlete2,f.source2||'',f.winner,f.loser,f.notes?f.notes.athlete1||'':'',f.notes?f.notes.athlete2||'':'']);}}rows.push([]);rows.push(['Раздел','Категория','Место','Спортсмен','Дополнительно']);for(var a=0;a<state.categories.length;a++){var cat=state.categories[a];if(cat.format==='roundRobin3'){var stats=getRoundRobinStats(cat);for(var s=0;s<stats.length;s++)rows.push(['Итоги',cat.name,s+1,stats[s].athlete,'Победы: '+stats[s].wins+'; поражения: '+stats[s].losses]);}else{var fin=getRoundFights(cat,'final')[0],third=getRoundFights(cat,'third')[0];rows.push(['Итоги',cat.name,1,fin?fin.winner||'':'','']);rows.push(['Итоги',cat.name,2,fin?fin.loser||'':'','']);if(cat.thirdPlaceEnabled){rows.push(['Итоги',cat.name,3,third?third.winner||'':'','']);}else{var b=getRoundFights(cat,'semi');var added=false;for(var x=0;x<b.length;x++){if(b[x].loser){rows.push(['Итоги',cat.name,3,b[x].loser,'Бой за 3 место не проводился']);added=true;}}if(!added)rows.push(['Итоги',cat.name,3,'','Бой за 3 место не проводится']);}}}var lines=[];for(var r=0;r<rows.length;r++){var row=rows[r];var cells=[];for(var col=0;col<row.length;col++)cells.push(csvEscape(row[col]));lines.push(cells.join(';'));}var csv='﻿'+lines.join(NL);downloadTextFile('saifa-tournament-results.csv',csv,'text/csv;charset=utf-8;');}
+function loadFromFile(e){var file=e.target.files[0];if(!file)return;var r=new FileReader();r.onload=function(){try{var p=JSON.parse(r.result);if(!p||!Array.isArray(p.categories))throw new Error('bad');state=p;for(var i=0;i<state.categories.length;i++){normalizeCategory(state.categories[i]);recalculateCategory(state.categories[i]);}saveState();}catch(err){alert('Не удалось загрузить JSON');console.error(err);}};r.readAsText(file);}
+function closestActionElement(start){var el=start;while(el&&el!==document){if(el.getAttribute){if(el.getAttribute('data-action')||el.classList.contains('category-item')||el.classList.contains('tab'))return el;}el=el.parentNode;}return null;}
+function handleClick(e){var t=closestActionElement(e.target);if(!t)return;if(t.classList.contains('tab')){state.activeTab=t.getAttribute('data-tab');if(state.activeTab==='bout')state.activeBoutFightId=null;saveState();return;}if(t.classList.contains('category-item')){selectCategory(t.getAttribute('data-category-id'));return;}var a=t.getAttribute('data-action');if(a==='open-import')openImportModal();if(a==='print')window.print();if(a==='delete-category')deleteCategory(t.getAttribute('data-category-id'));if(a==='add-fight')addFight(t.getAttribute('data-round'));if(a==='delete-fight')deleteFight(t.getAttribute('data-fight-id'));if(a==='choose-winner')chooseWinner(t.getAttribute('data-fight-id'),t.getAttribute('data-side'));if(a==='clear-winner')clearWinner(t.getAttribute('data-fight-id'));
+if(a==='finish-current-bout')finishCurrentBout(t.getAttribute('data-fight-id'));}
+function handleChange(e){var t=e.target,a=t.getAttribute?t.getAttribute('data-action'):null;if(t.id==='categoryFormat')toggleCreateOptions();if(a==='update-category-name')updateCategoryField('name',t.value);if(a==='toggle-third-place')toggleThirdPlace(t.value==='yes');if(a==='update-fight-number')updateFight(t.getAttribute('data-fight-id'),'fightNumber',t.value);if(a==='update-fight-athlete')updateFight(t.getAttribute('data-fight-id'),t.getAttribute('data-field'),t.value);}
+function handleInput(e){var t=e.target;if(t.getAttribute&&t.getAttribute('data-action')==='update-note')updateNote(t.getAttribute('data-fight-id'),t.getAttribute('data-key'),t.value);}
+function bindEvents(){
+  document.getElementById('addCategoryBtn').addEventListener('click',addCategory);
+  document.getElementById('saveJsonBtn').addEventListener('click',saveToFile);
+  document.getElementById('loadJsonBtn').addEventListener('click',function(){document.getElementById('loadFile').click();});
+  document.getElementById('exportExcelBtn').addEventListener('click',exportToExcel);
+  document.getElementById('loadFile').addEventListener('change',loadFromFile);
+  document.getElementById('applyBulkImportBtn').addEventListener('click',applyBulkImport);
+  document.getElementById('closeImportModalBtn').addEventListener('click',closeImportModal);
+  document.getElementById('categoryFormat').addEventListener('change',toggleCreateOptions);
+  document.getElementById('categoryFormat').addEventListener('input',toggleCreateOptions);
+  document.addEventListener('click',handleClick);
+  document.addEventListener('change',handleChange);
+  document.addEventListener('input',handleInput);
+}
+function runSelfTests(){
+  var sample=['1; eighth; А; Б','2; roundRobin; В; Г'].join(NL);
+  var p=parseBulkText(sample);
+  console.assert(p.length===2,'bulk parse');
+
+  var c=createCategory('Тест','eighth',false,[]);
+  console.assert(getRoundFights(c,'eighth').length===8,'eighth count');
+
+  var e=getRoundFights(c,'eighth');
+  e[0].fightNumber='10';
+  e[0].winner='А';
+  e[1].fightNumber='11';
+  e[1].winner='Б';
+  recalculateCategory(c);
+  console.assert(getRoundFights(c,'quarter')[0].source1==='победитель боя №10','source label');
+
+  var oldCategories=state.categories.slice();
+  state.categories=[];
+  var testCategory=createCategory('Проверка','quarter',false,[]);
+  assignMissingOrDuplicateFightNumbers(testCategory);
+  console.assert(getRoundFights(testCategory,'quarter').length===4,'quarter first round count');
+  state.categories=oldCategories;
+
+  var container=document.getElementById('olympicCreateBlock');
+  renderOlympicCreateInputs('quarter');
+  console.assert(container&&container.querySelectorAll('input').length===12,'participant inputs render for quarter');
+
+  var oldState=JSON.parse(JSON.stringify(state));
+  var boutCategory=createCategory('Бой-тест','finalOnly',false,[]);
+  boutCategory.fights[0].fightNumber='1';
+  boutCategory.fights[0].athlete1='Ака тест';
+  boutCategory.fights[0].athlete2='Широ тест';
+  state.categories=[boutCategory];
+  state.activeTab='bout';
+  state.activeBoutFightId=boutCategory.fights[0].id;
+  chooseWinner(boutCategory.fights[0].id,'athlete1');
+  console.assert(state.activeBoutFightId===boutCategory.fights[0].id,'bout stays active after winner selection');
+  state=oldState;
+}
+function init(){
+  bindEvents();
+  loadState();
+  var formatSelect=document.getElementById('categoryFormat');
+  if(formatSelect&&!formatSelect.value)formatSelect.value='eighth';
+  toggleCreateOptions();
+  render();
+  window.setTimeout(function(){toggleCreateOptions();},0);
+  runSelfTests();
+}
+init();
+</script>
+</body>
+</html>
